@@ -1,0 +1,11 @@
+# Aether Engine - Python Dependencies
+# Author: WebXExpert
+# Install with: pip install -r requirements.txt
+# Note: Requires Python 3.10-3.12 (tree-sitter-languages has no 3.13 wheels yet)
+
+# Tree-sitter for AST parsing
+# IMPORTANT: Use tree-sitter <0.22.0 for compatibility with tree-sitter-languages
+tree-sitter>=0.21.0,<0.22.0
+tree-sitter-languages>=1.10.0
+
+# No other dependencies - pure Python stdlib for everything else

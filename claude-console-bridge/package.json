@@ -1,0 +1,70 @@
+{
+  "name": "claude-console-bridge",
+  "version": "3.0.0",
+  "description": "Bridge server connecting browser and server errors to Claude CLI - includes NestJS, Prisma, and Express integrations",
+  "main": "index.js",
+  "types": "types/index.d.ts",
+  "bin": {
+    "claude-console-bridge": "./index.js",
+    "ccb": "./index.js"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./client": "./lib/client.js",
+    "./nestjs": "./lib/nestjs.js",
+    "./prisma": "./lib/prisma.js",
+    "./express": "./lib/express.js"
+  },
+  "files": [
+    "index.js",
+    "lib/",
+    "types/"
+  ],
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "claude",
+    "claude-cli",
+    "chrome",
+    "console",
+    "debugging",
+    "react",
+    "nextjs",
+    "nestjs",
+    "prisma",
+    "express",
+    "network",
+    "devtools",
+    "error-tracking",
+    "observability"
+  ],
+  "author": "WebXExpert",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "ws": "^8.14.2"
+  },
+  "peerDependencies": {
+    "@nestjs/common": ">=9.0.0",
+    "@prisma/client": ">=4.0.0",
+    "express": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@nestjs/common": {
+      "optional": true
+    },
+    "@prisma/client": {
+      "optional": true
+    },
+    "express": {
+      "optional": true
+    }
+  }
+}
