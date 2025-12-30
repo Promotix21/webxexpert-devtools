@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aether IDE - WebXExpert</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../../node_modules/monaco-editor/min/vs/editor/editor.main.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-tabs">
+                <button class="sidebar-tab active" data-panel="explorer" title="File Explorer">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                    </svg>
+                </button>
+                <button class="sidebar-tab" data-panel="symbols" title="Symbol Explorer">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
+                    </svg>
+                </button>
+                <button class="sidebar-tab" data-panel="aether" title="Aether Tools">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="sidebar-content">
+                <!-- File Explorer Panel -->
+                <div class="sidebar-panel active" id="explorer-panel">
+                    <div class="panel-header">
+                        <span>EXPLORER</span>
+                        <button class="panel-action" id="refresh-explorer" title="Refresh">↻</button>
+                    </div>
+                    <div class="file-tree" id="file-tree">
+                        <div class="empty-state">Open a folder to start</div>
+                    </div>
+                </div>
+
+                <!-- Symbol Explorer Panel -->
+                <div class="sidebar-panel" id="symbols-panel">
+                    <div class="panel-header">
+                        <span>SYMBOLS</span>
+                        <button class="panel-action" id="refresh-symbols" title="Refresh">↻</button>
+                    </div>
+                    <div class="symbol-filter">
+                        <input type="text" id="symbol-search" placeholder="Filter symbols...">
+                    </div>
+                    <div class="symbol-tree" id="symbol-tree">
+                        <div class="empty-state">Index a project to see symbols</div>
+                    </div>
+                </div>
+
+                <!-- Aether Tools Panel -->
+                <div class="sidebar-panel" id="aether-panel">
+                    <div class="panel-header">
+                        <span>AETHER</span>
+                    </div>
+                    <div class="aether-tools">
+                        <button class="aether-btn" id="btn-index">
+                            <span class="icon">📁</span> Index Project
+                        </button>
+                        <button class="aether-btn" id="btn-onboard">
+                            <span class="icon">🚀</span> Onboard Project
+                        </button>
+                        <button class="aether-btn" id="btn-find-refs">
+                            <span class="icon">🔍</span> Find References
+                        </button>
+                        <button class="aether-btn" id="btn-memories">
+                            <span class="icon">💾</span> View Memories
+                        </button>
+                        <div class="aether-status" id="aether-status">
+                            Ready
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Tab Bar -->
+            <div class="tab-bar" id="tab-bar">
+                <div class="tabs" id="tabs">
+                    <!-- Tabs will be added here dynamically -->
+                </div>
+            </div>
+
+            <!-- Editor Container -->
+            <div class="editor-container" id="editor-container">
+                <div class="welcome-screen" id="welcome-screen">
+                    <div class="branding">
+                        <h1>Aether IDE</h1>
+                        <p class="company">WebXExpert</p>
+                        <p class="author">by Rajesh Kumar</p>
+                    </div>
+                    <div class="shortcuts">
+                        <h3>Quick Start</h3>
+                        <ul>
+                            <li><kbd>Ctrl+O</kbd> Open File</li>
+                            <li><kbd>Ctrl+Shift+O</kbd> Open Folder</li>
+                            <li><kbd>Ctrl+Shift+I</kbd> Index Project</li>
+                            <li><kbd>Ctrl+`</kbd> Toggle Terminal</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terminal Panel -->
+            <div class="terminal-panel" id="terminal-panel">
+                <div class="terminal-header">
+                    <span>Terminal</span>
+                    <button class="terminal-close" id="terminal-close">×</button>
+                </div>
+                <div class="terminal-container" id="terminal-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../node_modules/monaco-editor/min/vs/loader.js"></script>
+    <script src="renderer.js"></script>
+</body>
+</html>

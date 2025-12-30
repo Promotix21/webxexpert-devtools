@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Console & Network for Claude CLI",
   "version": "2.0.0",
-  "description": "By WebXExpert - Captures console errors and network requests from React/Next.js apps for Claude CLI with VS Code integration",
+  "description": "By Rajesh Kumar (WebXExpert) - Captures console errors and network requests from React/Next.js apps for Claude CLI with VS Code integration",
   "permissions": [
     "activeTab",
     "scripting",

@@ -1,5 +1,5 @@
 # Aether Engine - Python Dependencies
-# Author: WebXExpert
+# Author: Rajesh Kumar (WebXExpert)
 # Install with: pip install -r requirements.txt
 # Note: Requires Python 3.10-3.12 (tree-sitter-languages has no 3.13 wheels yet)
 

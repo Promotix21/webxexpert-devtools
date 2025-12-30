@@ -14,7 +14,7 @@ Features:
 - Project onboarding and analysis
 - Pattern search with regex support
 
-Author: WebXExpert
+Author: Rajesh Kumar (WebXExpert)
 License: MIT
 """
 
