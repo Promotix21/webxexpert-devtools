@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aether Terminal</title>
+    <link rel="stylesheet" href="../../node_modules/@xterm/xterm/css/xterm.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #1e1e1e;
+            color: #cccccc;
+            font-family: 'Segoe UI', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: #252526;
+            border-bottom: 1px solid #3c3c3c;
+            -webkit-app-region: drag;
+        }
+        .terminal-title {
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .terminal-actions {
+            display: flex;
+            gap: 4px;
+            -webkit-app-region: no-drag;
+        }
+        .terminal-btn {
+            background: #3c3c3c;
+            border: none;
+            color: #cccccc;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .terminal-btn:hover {
+            background: #505050;
+        }
+        #terminal-container {
+            flex: 1;
+            padding: 8px;
+        }
+        #terminal-container .xterm {
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-header">
+        <span class="terminal-title">Aether Terminal (Detached)</span>
+        <div class="terminal-actions">
+            <button class="terminal-btn" id="btn-new" title="New Terminal">+</button>
+            <button class="terminal-btn" id="btn-clear" title="Clear">Clear</button>
+        </div>
+    </div>
+    <div id="terminal-container"></div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        const { Terminal } = require('@xterm/xterm');
+        const { FitAddon } = require('@xterm/addon-fit');
+
+        let xterm = null;
+        let fitAddon = null;
+        let ptyId = 'detached-term-1';
+        let ptyConnected = false;
+
+        // Listen for init from main process
+        ipcRenderer.on('init-terminal', async (event, cwd) => {
+            initTerminal(cwd);
+        });
+
+        async function initTerminal(cwd) {
+            const container = document.getElementById('terminal-container');
+
+            xterm = new Terminal({
+                cursorBlink: true,
+                fontSize: 14,
+                fontFamily: "'Cascadia Code', 'Fira Code', Consolas, monospace",
+                theme: {
+                    background: '#1e1e1e',
+                    foreground: '#cccccc',
+                    cursor: '#ffffff',
+                    selectionBackground: '#264f78'
+                },
+                allowProposedApi: true
+            });
+
+            fitAddon = new FitAddon();
+            xterm.loadAddon(fitAddon);
+            xterm.open(container);
+
+            setTimeout(() => fitAddon.fit(), 100);
+
+            // Check PTY availability
+            const ptyCheck = await ipcRenderer.invoke('pty-available');
+
+            if (ptyCheck.available) {
+                const result = await ipcRenderer.invoke('pty-create', ptyId, cwd);
+                if (result.success) {
+                    ptyConnected = true;
+                    xterm.onData(data => {
+                        ipcRenderer.send('pty-write', ptyId, data);
+                    });
+                    xterm.onResize(({ cols, rows }) => {
+                        ipcRenderer.send('pty-resize', ptyId, cols, rows);
+                    });
+                } else {
+                    xterm.write(`\\x1b[31mFailed to start PTY: ${result.error}\\x1b[0m\\r\\n`);
+                }
+            } else {
+                xterm.write('\\x1b[33mPTY not available. Basic mode only.\\x1b[0m\\r\\n');
+            }
+
+            xterm.focus();
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                fitAddon.fit();
+                if (ptyConnected) {
+                    ipcRenderer.send('pty-resize', ptyId, xterm.cols, xterm.rows);
+                }
+            });
+        }
+
+        // Listen for PTY data
+        ipcRenderer.on('pty-data', (event, id, data) => {
+            if (id === ptyId && xterm) {
+                xterm.write(data);
+            }
+        });
+
+        ipcRenderer.on('pty-exit', (event, id, exitCode) => {
+            if (id === ptyId && xterm) {
+                xterm.write(`\\r\\n\\x1b[33mProcess exited with code ${exitCode}\\x1b[0m\\r\\n`);
+            }
+        });
+
+        // Button handlers
+        document.getElementById('btn-clear').addEventListener('click', () => {
+            if (xterm) xterm.clear();
+        });
+
+        document.getElementById('btn-new').addEventListener('click', async () => {
+            // Kill old PTY and create new one
+            if (ptyConnected) {
+                ipcRenderer.send('pty-kill', ptyId);
+            }
+            ptyId = 'detached-term-' + Date.now();
+            if (xterm) {
+                xterm.clear();
+                const result = await ipcRenderer.invoke('pty-create', ptyId, process.cwd());
+                if (result.success) {
+                    ptyConnected = true;
+                }
+            }
+        });
+
+        // Cleanup on close
+        window.addEventListener('beforeunload', () => {
+            if (ptyConnected) {
+                ipcRenderer.send('pty-kill', ptyId);
+            }
+        });
+    </script>
+</body>
+</html>

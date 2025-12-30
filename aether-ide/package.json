@@ -14,18 +14,24 @@
     "build": "electron-builder",
     "build:win": "electron-builder --win",
     "build:mac": "electron-builder --mac",
-    "build:linux": "electron-builder --linux"
+    "build:linux": "electron-builder --linux",
+    "rebuild": "npx @electron/rebuild"
   },
   "dependencies": {
-    "monaco-editor": "^0.45.0"
+    "monaco-editor": "^0.45.0",
+    "node-pty": "^1.0.0",
+    "@xterm/xterm": "^5.5.0",
+    "@xterm/addon-fit": "^0.10.0"
   },
   "devDependencies": {
     "electron": "^28.0.0",
-    "electron-builder": "^24.9.1"
+    "electron-builder": "^24.9.1",
+    "@electron/rebuild": "^3.6.0"
   },
   "build": {
     "appId": "com.webxexpert.aether-ide",
     "productName": "Aether IDE",
+    "copyright": "Copyright © 2024 WebXExpert - Rajesh Kumar",
     "directories": {
       "output": "dist"
     },
@@ -34,9 +40,34 @@
       "node_modules/**/*",
       "package.json"
     ],
+    "extraResources": [
+      {
+        "from": "../aether",
+        "to": "aether",
+        "filter": ["**/*.py", "**/*.json", "**/*.md", "**/*.txt", "**/*.toml", "!**/__pycache__/**", "!**/.git/**"]
+      },
+      {
+        "from": "../chrome-console-for-claude",
+        "to": "chrome-extension",
+        "filter": ["**/*", "!**/.git/**"]
+      }
+    ],
     "win": {
       "target": "nsis",
-      "icon": "assets/icon.ico"
+      "publisherName": "WebXExpert"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Aether IDE",
+      "menuCategory": "WebXExpert",
+      "include": "installer.nsh",
+      "license": "LICENSE.txt",
+      "installerSidebar": null,
+      "uninstallDisplayName": "Aether IDE"
     },
     "mac": {
       "target": "dmg",
