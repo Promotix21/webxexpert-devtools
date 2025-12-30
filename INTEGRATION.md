@@ -1,7 +1,7 @@
 # WebXExpert Developer Ecosystem - Integration Guide
 
-> **Author:** WebXExpert
-> **Version:** 1.0.0
+> **Author:** Rajesh Kumar (WebXExpert)
+> **Version:** 1.1.0
 > **Last Updated:** December 2024
 
 ---
@@ -195,6 +195,38 @@ aether/
 └── scripts/
     ├── build_languages.ps1
     └── build_languages.sh
+```
+
+### 4. Aether IDE (`aether-ide`)
+
+**Purpose:** Native desktop code editor with Aether integration
+
+**Features:**
+- Monaco Editor (same as VS Code)
+- Aether-powered symbol navigation
+- File explorer with folder browsing
+- Symbol search and filtering
+- Cross-platform (Windows, Mac, Linux)
+
+**Files:**
+```
+aether-ide/
+├── package.json           # Electron config
+├── src/
+│   ├── main/
+│   │   └── main.js        # Electron main process
+│   └── renderer/
+│       ├── index.html     # UI layout
+│       ├── styles.css     # Dark theme styling
+│       └── renderer.js    # Editor logic
+└── assets/                # Icons
+```
+
+**Quick Start:**
+```bash
+cd aether-ide
+npm install
+npm start
 ```
 
 ---
@@ -713,11 +745,16 @@ DEBUG=* node index.js
 
 ## License
 
-MIT License - WebXExpert
+MIT License - Rajesh Kumar (WebXExpert)
 
 ---
 
 ## Changelog
+
+### v1.1.0 (December 2024)
+- Added Aether IDE - Electron-based code editor
+- Updated author branding to Rajesh Kumar (WebXExpert)
+- Improved documentation
 
 ### v1.0.0 (December 2024)
 - Initial release
