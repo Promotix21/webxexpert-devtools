@@ -1,6 +1,6 @@
 {
   "name": "claude-console-bridge",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Bridge server connecting browser and server errors to Claude Code - includes MCP server, NestJS, Prisma, and Express integrations",
   "main": "index.js",
   "types": "types/index.d.ts",
