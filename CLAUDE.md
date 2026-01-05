@@ -4,6 +4,10 @@
 
 This workspace contains the Aether developer toolkit for AI-assisted debugging and code intelligence.
 
+**Requirements:** Python 3.10-3.12 (not 3.13), Node.js 14+
+
+> On Windows, use `py -3.12` instead of `python` if Python 3.13 is your default.
+
 ## Quick Start
 
 ### 1. Start Console Bridge (for browser debugging)
