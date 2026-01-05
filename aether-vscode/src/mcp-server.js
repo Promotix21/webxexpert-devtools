@@ -15,7 +15,8 @@ const fs = require("fs");
 const CONFIG = {
   consoleBridgePort: parseInt(process.env.CONSOLE_BRIDGE_PORT || "9877"),
   aetherEnginePath: process.env.AETHER_ENGINE_PATH || "",
-  pythonPath: process.env.PYTHON_PATH || "python",
+  pythonCommand: process.env.PYTHON_PATH || (process.platform === "win32" ? "py" : "python3"),
+  pythonArgs: process.platform === "win32" ? ["-3.12"] : [],
   workspaceRoot: process.env.WORKSPACE_ROOT || process.cwd(),
 };
 
@@ -39,7 +40,7 @@ function httpGet(url) {
 }
 
 // Helper: Run Aether Engine command
-function runAether(command, args = {}) {
+function runAether(action, args = {}) {
   return new Promise((resolve, reject) => {
     let enginePath = CONFIG.aetherEnginePath;
 
@@ -64,8 +65,29 @@ function runAether(command, args = {}) {
       return;
     }
 
-    const input = JSON.stringify({ command, ...args });
-    const proc = spawn(CONFIG.pythonPath, [enginePath], {
+    // Build CLI arguments
+    const cliArgs = [...CONFIG.pythonArgs, enginePath, action];
+
+    // Add target if provided
+    if (args.target) {
+      cliArgs.push(args.target);
+    }
+    if (args.target2) {
+      cliArgs.push(args.target2);
+    }
+
+    // Add project path
+    cliArgs.push("--project", args.project || CONFIG.workspaceRoot);
+
+    // Add optional flags
+    if (args.type) cliArgs.push("--type", args.type);
+    if (args.file) cliArgs.push("--file", args.file);
+    if (args.name) cliArgs.push("--name", args.name);
+    if (args.code) cliArgs.push("--code", args.code);
+    if (args.regex) cliArgs.push("--regex");
+    if (args.apply) cliArgs.push("--apply");
+
+    const proc = spawn(CONFIG.pythonCommand, cliArgs, {
       cwd: CONFIG.workspaceRoot,
     });
 
@@ -86,9 +108,6 @@ function runAether(command, args = {}) {
         }
       }
     });
-
-    proc.stdin.write(input);
-    proc.stdin.end();
   });
 }
 
@@ -364,10 +383,10 @@ async function handleTool(name, args) {
     // Aether Engine handlers
     case "list_symbols": {
       try {
-        const result = await runAether("list", {
-          path: args.path || CONFIG.workspaceRoot,
+        const result = await runAether("list_symbols", {
+          project: args.path || CONFIG.workspaceRoot,
           type: args.type,
-          recursive: args.recursive !== false,
+          file: args.path,
         });
         return {
           content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
@@ -384,9 +403,9 @@ async function handleTool(name, args) {
 
     case "find_references": {
       try {
-        const result = await runAether("references", {
-          symbol: args.symbol,
-          path: args.path || CONFIG.workspaceRoot,
+        const result = await runAether("find_references", {
+          target: args.symbol,
+          project: args.path || CONFIG.workspaceRoot,
         });
         return {
           content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
@@ -404,9 +423,9 @@ async function handleTool(name, args) {
     case "search_code": {
       try {
         const result = await runAether("search", {
-          pattern: args.pattern,
-          path: args.path || CONFIG.workspaceRoot,
-          file_pattern: args.file_pattern,
+          target: args.pattern,
+          project: args.path || CONFIG.workspaceRoot,
+          regex: true,
         });
         return {
           content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
@@ -423,8 +442,8 @@ async function handleTool(name, args) {
 
     case "get_symbol_info": {
       try {
-        const result = await runAether("info", {
-          symbol: args.symbol,
+        const result = await runAether("read_symbol", {
+          target: args.symbol,
           file: args.file,
         });
         return {
@@ -443,7 +462,7 @@ async function handleTool(name, args) {
     case "index_project": {
       try {
         const result = await runAether("index", {
-          path: args.path || CONFIG.workspaceRoot,
+          project: args.path || CONFIG.workspaceRoot,
         });
         return {
           content: [
