@@ -1,0 +1,111 @@
+{
+  "name": "aether-mcp",
+  "displayName": "Aether MCP",
+  "description": "MCP server for Claude Code - provides browser errors, network requests, and code intelligence via Aether Engine",
+  "version": "1.0.0",
+  "publisher": "webxexpert",
+  "author": "Rajesh Kumar (WebXExpert)",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Debuggers",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "claude",
+    "claude-code",
+    "mcp",
+    "debugging",
+    "aether",
+    "code-intelligence"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "aether-mcp.startBridge",
+        "title": "Aether MCP: Start Console Bridge"
+      },
+      {
+        "command": "aether-mcp.stopBridge",
+        "title": "Aether MCP: Stop Console Bridge"
+      },
+      {
+        "command": "aether-mcp.startServer",
+        "title": "Aether MCP: Start Server"
+      },
+      {
+        "command": "aether-mcp.stopServer",
+        "title": "Aether MCP: Stop Server"
+      },
+      {
+        "command": "aether-mcp.showStatus",
+        "title": "Aether MCP: Show Status"
+      },
+      {
+        "command": "aether-mcp.copyMcpConfig",
+        "title": "Aether MCP: Copy MCP Config to Clipboard"
+      },
+      {
+        "command": "aether-mcp.showOutput",
+        "title": "Aether MCP: Show Output Log"
+      }
+    ],
+    "configuration": {
+      "title": "Aether MCP",
+      "properties": {
+        "aether-mcp.consoleBridgePort": {
+          "type": "number",
+          "default": 9877,
+          "description": "HTTP port for Console Bridge"
+        },
+        "aether-mcp.aetherEnginePath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to aether_engine.py (auto-detected if empty)"
+        },
+        "aether-mcp.pythonPath": {
+          "type": "string",
+          "default": "python",
+          "description": "Path to Python executable"
+        },
+        "aether-mcp.autoStart": {
+          "type": "boolean",
+          "default": true,
+          "description": "Auto-start MCP server when VS Code opens"
+        },
+        "aether-mcp.autoStartBridge": {
+          "type": "boolean",
+          "default": true,
+          "description": "Auto-start Console Bridge server when VS Code opens"
+        },
+        "aether-mcp.mcpPort": {
+          "type": "number",
+          "default": 9878,
+          "description": "Port for MCP server"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^2.22.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
+}

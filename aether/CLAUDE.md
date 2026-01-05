@@ -23,7 +23,7 @@ python aether_engine.py find_references <symbol_name> --project .
 python aether_engine.py list_memories --project .
 
 # Add a memory/insight
-python aether_engine.py add_memory "<content>" --project .
+python aether_engine.py write_memory "memory_name" --content "<content>" --project .
 ```
 
 ## Project Structure

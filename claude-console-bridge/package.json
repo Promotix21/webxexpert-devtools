@@ -1,19 +1,21 @@
 {
   "name": "claude-console-bridge",
-  "version": "3.0.0",
-  "description": "Bridge server connecting browser and server errors to Claude CLI - includes NestJS, Prisma, and Express integrations",
+  "version": "3.1.0",
+  "description": "Bridge server connecting browser and server errors to Claude Code - includes MCP server, NestJS, Prisma, and Express integrations",
   "main": "index.js",
   "types": "types/index.d.ts",
   "bin": {
     "claude-console-bridge": "./index.js",
-    "ccb": "./index.js"
+    "ccb": "./index.js",
+    "ccb-mcp": "./lib/mcp-server.js"
   },
   "exports": {
     ".": "./index.js",
     "./client": "./lib/client.js",
     "./nestjs": "./lib/nestjs.js",
     "./prisma": "./lib/prisma.js",
-    "./express": "./lib/express.js"
+    "./express": "./lib/express.js",
+    "./mcp": "./lib/mcp-server.js"
   },
   "files": [
     "index.js",
@@ -26,6 +28,9 @@
   "keywords": [
     "claude",
     "claude-cli",
+    "claude-code",
+    "mcp",
+    "model-context-protocol",
     "chrome",
     "console",
     "debugging",
@@ -37,7 +42,8 @@
     "network",
     "devtools",
     "error-tracking",
-    "observability"
+    "aether",
+    "code-intelligence"
   ],
   "author": "Rajesh Kumar (WebXExpert)",
   "license": "MIT",

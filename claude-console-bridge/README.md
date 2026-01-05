@@ -1,6 +1,8 @@
 # claude-console-bridge
 
-Bridge server that connects Chrome browser console/network capture to Claude CLI. Run it from your project folder and Claude CLI can automatically access browser errors.
+Bridge server that connects Chrome browser console/network capture to Claude Code. Includes an **MCP server** for direct Claude Code integration.
+
+**New in v3.1.0**: MCP (Model Context Protocol) server for native Claude Code tool access!
 
 ## Installation
 
@@ -78,6 +80,61 @@ When running, these are available at `http://localhost:9877`:
 | `GET /network` | Network requests as JSON |
 | `GET /data` | All captured data |
 | `GET /clear` | Clear all data |
+
+## MCP Server (Claude Code Integration)
+
+The MCP server gives Claude Code direct tool access to browser errors, network requests, and Aether Engine code intelligence.
+
+### Setup
+
+Add to your Claude Code settings (`~/.claude/settings.json`):
+
+```json
+{
+  "mcpServers": {
+    "aether": {
+      "command": "npx",
+      "args": ["ccb-mcp"],
+      "env": {
+        "WORKSPACE_ROOT": "/path/to/your/project",
+        "CONSOLE_BRIDGE_PORT": "9877"
+      }
+    }
+  }
+}
+```
+
+Or run standalone:
+```bash
+ccb-mcp
+```
+
+### Available Tools
+
+Once configured, Claude Code has access to:
+
+| Tool | Description |
+|------|-------------|
+| `get_debug_summary` | Markdown summary of browser errors |
+| `get_browser_errors` | Console errors as JSON |
+| `get_network_requests` | Network requests (can filter failed only) |
+| `clear_debug_data` | Clear all captured data |
+| `list_symbols` | List functions/classes in a file |
+| `find_references` | Find all references to a symbol |
+| `search_code` | Search code with regex |
+| `get_symbol_info` | Get symbol details |
+| `index_project` | Index project for faster lookups |
+
+### Example
+
+```
+> claude
+You: Check if there are any browser errors
+Claude: [Uses get_debug_summary tool]
+Found 2 errors:
+1. TypeError: Cannot read property 'map' of undefined (App.jsx:42)
+2. 404 /api/users
+```
 
 ## Custom Port
 

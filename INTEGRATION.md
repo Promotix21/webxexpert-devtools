@@ -674,21 +674,86 @@ response = call_ai_api(prompt)
 
 ### MCP Server Integration
 
-Create Aether as an MCP server for Claude Desktop:
+The Aether MCP server provides tools to Claude for browser debugging and code intelligence.
+
+#### Claude Code CLI Configuration
+
+Add to `~/.claude/settings.json` (create if doesn't exist):
 
 ```json
 {
   "mcpServers": {
     "aether": {
-      "command": "python",
-      "args": ["/path/to/aether_mcp_server.py"],
+      "command": "node",
+      "args": ["D:\\CRM\\Debugging\\aether-vscode\\src\\mcp-server.js"],
       "env": {
-        "PROJECT_PATH": "/path/to/your/project"
+        "WORKSPACE_ROOT": "D:\\CRM\\Debugging",
+        "CONSOLE_BRIDGE_PORT": "9877",
+        "AETHER_ENGINE_PATH": "D:\\CRM\\Debugging\\aether\\aether_engine.py"
       }
     }
   }
 }
 ```
+
+#### Claude Desktop App Configuration
+
+Edit the Claude Desktop config file:
+
+| Platform | Config Path |
+|----------|-------------|
+| Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
+| macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
+| Linux | `~/.config/Claude/claude_desktop_config.json` |
+
+Add the following configuration:
+
+```json
+{
+  "mcpServers": {
+    "aether": {
+      "command": "node",
+      "args": ["D:\\CRM\\Debugging\\aether-vscode\\src\\mcp-server.js"],
+      "env": {
+        "WORKSPACE_ROOT": "D:\\CRM\\Debugging",
+        "CONSOLE_BRIDGE_PORT": "9877",
+        "AETHER_ENGINE_PATH": "D:\\CRM\\Debugging\\aether\\aether_engine.py"
+      }
+    }
+  }
+}
+```
+
+**Note:** Adjust paths for your system. On Mac/Linux, use forward slashes:
+```json
+"args": ["/home/user/projects/aether-vscode/src/mcp-server.js"]
+```
+
+#### Available MCP Tools
+
+Once configured, Claude has access to:
+
+| Tool | Description |
+|------|-------------|
+| `get_debug_summary` | Markdown summary of browser errors |
+| `get_browser_errors` | Console errors as JSON |
+| `get_network_requests` | Network requests (supports `failed_only: true`) |
+| `clear_debug_data` | Clear captured debugging data |
+| `list_symbols` | List functions/classes in a file |
+| `find_references` | Find all usages of a symbol |
+| `search_code` | Regex search across codebase |
+| `get_symbol_info` | Get symbol definition and docstring |
+| `index_project` | Re-index project after changes |
+
+#### Verification
+
+After configuring, restart Claude Desktop/CLI. You should see a plug icon or MCP indicator. Test with:
+
+```
+"Check if there are any browser errors using the debug tools"
+```
+
+Claude will call `get_debug_summary` if MCP is working correctly.
 
 ---
 
