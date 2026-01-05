@@ -383,10 +383,17 @@ async function handleTool(name, args) {
     // Aether Engine handlers
     case "list_symbols": {
       try {
+        // If path is a file, use its directory as project and filename as filter
+        let projectPath = args.path || CONFIG.workspaceRoot;
+        let fileFilter = null;
+        if (args.path && args.path.match(/\.(py|js|ts|tsx|java|c|cpp|go|rs)$/i)) {
+          projectPath = path.dirname(args.path);
+          fileFilter = path.basename(args.path);
+        }
         const result = await runAether("list_symbols", {
-          project: args.path || CONFIG.workspaceRoot,
+          project: projectPath,
           type: args.type,
-          file: args.path,
+          file: fileFilter,
         });
         return {
           content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
